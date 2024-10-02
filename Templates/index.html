@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .upload-form {
+            margin-top: 20px;
+        }
+
+        .upload-form input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        .data-table {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #f0f0f0;
+        }
+
+        .filter-form, .clear-filter-form, .download-form, .download-filtered {
+            margin-top: 20px;
+        }
+
+        .filter-form select {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Excel Table</h1>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data" class="upload-form">
+            <input type="file" name="file" accept=".xlsx, .xls" required>
+            <input type="submit" value="Upload" class="button">
+        </form>
+        {% if data %}
+        <div class="button-group">
+            <form action="" method="post" class="filter-form">
+                <select name="filter_grade" required>
+                    <option value="">Select Grade</option>
+                    <option value="O">O</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B+">B+</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="U">U</option>
+                </select>
+                <input type="submit" value="Filter" class="button">
+                <input type="hidden" name="filename" value="{{ filename }}">
+            </form>
+            {% if filtered %}
+            <form action="" method="post" class="clear-filter-form">
+                <input type="submit" value="Clear Filter" class="button">
+                <input type="hidden" name="filename" value="{{ filename }}">
+                <input type="hidden" name="clear_filter" value="True">
+            </form>
+            {% endif %}
+        </div>
+        <div class="data-table">
+            <h2>{% if filtered %}Filtered {% endif %}Data</h2>
+            {{ data|safe }}
+        </div>
+        <div class="button-group">
+            <form action="" method="post" class="download-form">
+                <input type="submit" name="download_all" value="Download All Data as PDF" class="button">
+                <!-- Corrected hidden input (removed space) -->
+                <input type="hidden" name="filename" value="{{ filename }}">
+            </form>
+            {% if filtered %}
+            <form action="" method="post" class="download-filtered">
+                <input type="submit" name="download_filtered" value="Download Filtered Data as PDF" class="button">
+                <input type="hidden" name="filename" value="{{ filename }}">
+                <input type="hidden" name="filter_grade" value="{{ filter_grade }}">
+            </form>
+            {% endif %}
+        </div>
+        {% endif %}
+        <div class="footer">
+            &copy; 2023 Excel Table Generator
+        </div>
+    </div>
+</body>
+</html>
